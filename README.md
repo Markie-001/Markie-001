@@ -1,5 +1,9 @@
 # 💫 About Me:
-- 🔭 I’m currently working on ...<br>- 🌱 I’m currently learning ...<br>- 👯 I’m looking to collaborate on ...<br>- 🤔 I’m looking for help with ...<br>- 💬 Ask me about ...<br>- 📫 How to reach me: ...<br>- ⚡ Fun fact: ...
+- 🔭 I’m currently working on a group project<br>
+- 🌱 I’m currently learning PHP<br>
+- 🤔 I’m looking for help with ...<br>
+- 💬 Ask me about myself<br>
+- ⚡ Fun fact: Shy, Gamer, Hardworker and Student
 
 
 # 💻 Tech Stack:
