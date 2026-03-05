@@ -1,13 +1,13 @@
 # 💫 About Me:
-🔭 I’m currently working on a **group project with my classmates – building an interactive quiz website**
+👨🏻‍💻 I’m currently working on a **group project with my classmates – building an interactive quiz website**
 
-🌱 I’m currently learning **HTML, CSS, JavaScript and PHP**
+📚 I’m currently learning **HTML, CSS, JavaScript and PHP**
 
 🤔 I’m looking for help with **improving my backend logic and making better web applications**
 
 💬 Ask me about **basic web development, front-end design, and JavaScript**
 
-⚡ Fun fact: **My goal is to become a remote developer and work from home in the future**
+☝️🤓 Fun fact: **My goal is to become a remote developer and work from home in the future**
 
 
 
