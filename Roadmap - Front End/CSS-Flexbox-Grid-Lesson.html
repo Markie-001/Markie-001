@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Flexbox & Grid — Interactive Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #16161d;
+    --card: #1c1c26;
+    --border: #2a2a3a;
+    --flex-color: #f7c948;
+    --grid-color: #4af7a8;
+    --text: #d4d4e8;
+    --muted: #5a5a78;
+    --bright: #ffffff;
+    --code-bg: #0a0a0f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+  }
+
+  /* NAV TABS */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,15,19,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 0;
+  }
+
+  .nav-logo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 20px 16px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+
+  .nav-tab {
+    padding: 18px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active-flex { color: var(--flex-color); border-bottom-color: var(--flex-color); }
+  .nav-tab.active-grid { color: var(--grid-color); border-bottom-color: var(--grid-color); }
+
+  .progress-dots {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .dot.done { background: var(--grid-color); }
+  .dot.active-f { background: var(--flex-color); }
+  .dot.active-g { background: var(--grid-color); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 48px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--bright);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 .f { color: var(--flex-color); }
+  .hero h1 .g { color: var(--grid-color); }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 32px;
+  }
+
+  .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .btn {
+    padding: 12px 28px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-flex { background: var(--flex-color); color: #0f0f13; }
+  .btn-grid { background: var(--grid-color); color: #0f0f13; }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+
+  /* LESSON LAYOUT */
+  .lesson {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  .lesson-header {
+    padding: 40px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .lesson-header .badge {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    display: inline-block;
+  }
+
+  .badge-flex { background: rgba(247,201,72,0.12); color: var(--flex-color); border: 1px solid rgba(247,201,72,0.3); }
+  .badge-grid { background: rgba(74,247,168,0.12); color: var(--grid-color); border: 1px solid rgba(74,247,168,0.3); }
+
+  .lesson-header h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    color: var(--bright);
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .lesson-header p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 560px;
+  }
+
+  /* CONCEPT CARD */
+  .concept {
+    margin-bottom: 48px;
+  }
+
+  .concept-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .concept-title .num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .num-flex { background: rgba(247,201,72,0.15); color: var(--flex-color); }
+  .num-grid { background: rgba(74,247,168,0.15); color: var(--grid-color); }
+
+  .concept p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    padding-left: 38px;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .code-block.flex-code { border-left-color: var(--flex-color); }
+  .code-block.grid-code { border-left-color: var(--grid-color); }
+
+  .code-block pre {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  .kw { color: #c792ea; }
+  .prop { color: #82aaff; }
+  .val-flex { color: var(--flex-color); }
+  .val-grid { color: var(--grid-color); }
+  .comment { color: var(--muted); font-style: italic; }
+  .sel { color: #ff6b6b; }
+
+  /* LIVE PLAYGROUND */
+  .playground {
+    background: var(--card);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+    overflow: hidden;
+  }
+
+  .playground-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .playground-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .playground-title span { color: var(--bright); }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .ctrl-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ctrl-select {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .ctrl-select:focus { border-color: var(--flex-color); }
+
+  .preview {
+    min-height: 160px;
+    padding: 20px;
+    position: relative;
+  }
+
+  .preview-container {
+    width: 100%;
+    min-height: 120px;
+    background: rgba(0,0,0,0.3);
+    border: 1px dashed var(--border);
+    padding: 8px;
+    position: relative;
+  }
+
+  .preview-box {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .box-1 { background: rgba(247,201,72,0.25); color: var(--flex-color); border: 1px solid rgba(247,201,72,0.4); }
+  .box-2 { background: rgba(74,247,168,0.15); color: var(--grid-color); border: 1px solid rgba(74,247,168,0.3); }
+  .box-3 { background: rgba(130,170,255,0.15); color: #82aaff; border: 1px solid rgba(130,170,255,0.3); }
+  .box-4 { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); }
+  .box-5 { background: rgba(199,125,255,0.15); color: #c77dff; border: 1px solid rgba(199,125,255,0.3); }
+  .box-6 { background: rgba(255,190,11,0.15); color: #ffbe0b; border: 1px solid rgba(255,190,11,0.3); }
+
+  .code-output {
+    background: var(--code-bg);
+    border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .code-output .highlight { color: var(--flex-color); }
+  .code-output .highlight-g { color: var(--grid-color); }
+
+  /* ANALOGY BOX */
+  .analogy {
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .analogy-icon { font-size: 1.8rem; flex-shrink: 0; }
+
+  .analogy-text h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 4px;
+  }
+
+  .analogy-text p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CHEAT SHEET */
+  .cheat-sheet {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .cheat-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cheat-card.flex-card h4 { color: var(--flex-color); }
+  .cheat-card.grid-card h4 { color: var(--grid-color); }
+
+  .cheat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .cheat-prop { color: #82aaff; font-family: 'Fira Code', monospace; }
+  .cheat-val { color: var(--muted); font-family: 'Fira Code', monospace; text-align: right; font-size: 11px; }
+
+  /* QUIZ */
+  .quiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  .quiz-q {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 16px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quiz-opt {
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .quiz-opt:hover { border-color: var(--text); }
+  .quiz-opt.correct { background: rgba(74,247,168,0.1); border-color: var(--grid-color); color: var(--grid-color); }
+  .quiz-opt.wrong { background: rgba(255,107,107,0.1); border-color: #ff6b6b; color: #ff6b6b; }
+
+  .quiz-feedback {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    display: none;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-left: 3px solid var(--grid-color);
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 32px;
+  }
+
+  .section-divider span {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 48px 20px 40px; }
+    .lesson { padding: 0 20px 60px; }
+    .nav { padding: 0 16px; }
+    .cheat-sheet { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">CSS Layout</div>
+  <div class="nav-tab" id="tab-home" onclick="showPage('home')">Home</div>
+  <div class="nav-tab" id="tab-flex" onclick="showPage('flex')">📦 Flexbox</div>
+  <div class="nav-tab" id="tab-grid" onclick="showPage('grid')">⊞ Grid</div>
+  <div class="nav-tab" id="tab-quiz" onclick="showPage('quiz')">✓ Quiz</div>
+  <div class="progress-dots" id="dots"></div>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge">Interactive Lesson</div>
+    <h1>Master <span class="f">Flexbox</span><br>& <span class="g">CSS Grid</span></h1>
+    <p>Two layout systems that power every modern website. Learn them both with live playgrounds and instant feedback.</p>
+    <div class="btn-row">
+      <button class="btn btn-flex" onclick="showPage('flex')">Start with Flexbox →</button>
+      <button class="btn btn-grid" onclick="showPage('grid')">Jump to Grid →</button>
+    </div>
+  </div>
+
+  <div style="max-width:900px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div style="background:var(--card);border:1px solid var(--border);padding:28px;">
+      <div style="font-size:2rem;margin-bottom:12px;">📦</div>
+      <h3 style="color:var(--flex-color);font-size:1.1rem;margin-bottom:8px;">Flexbox</h3>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7;">One-dimensional layout. Perfect for rows or columns of items — navbars, button groups, card rows, centering things.</p>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);padding:28px;">
+      <div style="font-size:2rem;margin-bottom:12px;">⊞</div>
+      <h3 style="color:var(--grid-color);font-size:1.1rem;margin-bottom:8px;">CSS Grid</h3>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7;">Two-dimensional layout. Perfect for full page layouts, image galleries, dashboards — rows AND columns at the same time.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FLEXBOX PAGE -->
+<div class="page" id="page-flex">
+  <div class="lesson">
+    <div class="lesson-header">
+      <div class="badge badge-flex">Chapter 1</div>
+      <h2>CSS Flexbox</h2>
+      <p>One axis at a time — the easiest way to align and distribute items in a row or column.</p>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-icon">🚂</div>
+      <div class="analogy-text">
+        <h4>Think of it like a train</h4>
+        <p>Flexbox is like train carriages on a single track. They line up in a row (or column). You control how much space is between them, whether they're bunched together or spread out, and how they align vertically.</p>
+      </div>
+    </div>
+
+    <!-- CONCEPT 1 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-flex">1</span> Turn on Flexbox</div>
+      <p>Add <code style="color:var(--flex-color);font-family:'Fira Code',monospace">display: flex</code> to the <strong style="color:var(--bright)">parent</strong> container. The children automatically become flex items.</p>
+      <div class="code-block flex-code">
+        <pre><span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val-flex">flex</span>;  <span class="comment">/* that's it! */</span>
+}
+
+<span class="comment">/* The children become flex items automatically */</span>
+<span class="sel">.container div</span> {
+  <span class="prop">width</span>: <span class="val-flex">60px</span>;
+  <span class="prop">height</span>: <span class="val-flex">60px</span>;
+}</pre>
+      </div>
+    </div>
+
+    <!-- PLAYGROUND 1: flex-direction + justify-content -->
+    <div class="playground">
+      <div class="playground-header">
+        <span class="playground-title">⚡ Live Playground — <span>Flex Direction & Justify Content</span></span>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">flex-direction</span>
+          <select class="ctrl-select" id="p1-direction" onchange="updateP1()">
+            <option>row</option>
+            <option>row-reverse</option>
+            <option>column</option>
+            <option>column-reverse</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">justify-content</span>
+          <select class="ctrl-select" id="p1-justify" onchange="updateP1()">
+            <option>flex-start</option>
+            <option>flex-end</option>
+            <option>center</option>
+            <option>space-between</option>
+            <option>space-around</option>
+            <option>space-evenly</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">align-items</span>
+          <select class="ctrl-select" id="p1-align" onchange="updateP1()">
+            <option>stretch</option>
+            <option>flex-start</option>
+            <option>flex-end</option>
+            <option>center</option>
+          </select>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="preview-container" id="p1-preview" style="display:flex;min-height:140px;">
+          <div class="preview-box box-1">A</div>
+          <div class="preview-box box-2">B</div>
+          <div class="preview-box box-3">C</div>
+          <div class="preview-box box-4">D</div>
+        </div>
+      </div>
+      <div class="code-output" id="p1-code"></div>
+    </div>
+
+    <!-- CONCEPT 2 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-flex">2</span> flex-direction — Which way do items go?</div>
+      <p><code style="font-family:'Fira Code',monospace;color:var(--flex-color)">row</code> (default) = left to right. <code style="font-family:'Fira Code',monospace;color:var(--flex-color)">column</code> = top to bottom. Think of it as choosing horizontal or vertical train tracks.</p>
+    </div>
+
+    <!-- CONCEPT 3 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-flex">3</span> justify-content — Space along the main axis</div>
+      <p>Controls how items are spread out along the direction they flow. This is your most-used flex property.</p>
+      <div class="code-block flex-code">
+        <pre><span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val-flex">flex</span>;
+  <span class="prop">justify-content</span>: <span class="val-flex">space-between</span>;  <span class="comment">/* items spread edge to edge */</span>
+  <span class="comment">/* other values: flex-start | flex-end | center | space-around | space-evenly */</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- CONCEPT 4 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-flex">4</span> align-items — Space on the cross axis</div>
+      <p>If <code style="font-family:'Fira Code',monospace;color:var(--flex-color)">justify-content</code> is horizontal, <code style="font-family:'Fira Code',monospace;color:var(--flex-color)">align-items</code> is vertical. Use <code style="font-family:'Fira Code',monospace;color:var(--flex-color)">center</code> + <code style="font-family:'Fira Code',monospace;color:var(--flex-color)">center</code> to perfectly center anything.</p>
+    </div>
+
+    <!-- PLAYGROUND 2: flex-wrap + gap -->
+    <div class="playground">
+      <div class="playground-header">
+        <span class="playground-title">⚡ Live Playground — <span>Flex Wrap & Gap</span></span>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">flex-wrap</span>
+          <select class="ctrl-select" id="p2-wrap" onchange="updateP2()">
+            <option>nowrap</option>
+            <option>wrap</option>
+            <option>wrap-reverse</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">gap</span>
+          <select class="ctrl-select" id="p2-gap" onchange="updateP2()">
+            <option value="0">0px</option>
+            <option value="8px">8px</option>
+            <option value="16px" selected>16px</option>
+            <option value="24px">24px</option>
+          </select>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="preview-container" id="p2-preview" style="display:flex;flex-wrap:wrap;gap:16px;min-height:100px;">
+          <div class="preview-box box-1" style="width:80px">A</div>
+          <div class="preview-box box-2" style="width:80px">B</div>
+          <div class="preview-box box-3" style="width:80px">C</div>
+          <div class="preview-box box-4" style="width:80px">D</div>
+          <div class="preview-box box-5" style="width:80px">E</div>
+          <div class="preview-box box-6" style="width:80px">F</div>
+        </div>
+      </div>
+      <div class="code-output" id="p2-code"></div>
+    </div>
+
+    <div class="section-divider"><span>Quick Reference</span></div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-card flex-card">
+        <h4>📦 Parent (Container)</h4>
+        <div class="cheat-row"><span class="cheat-prop">display</span><span class="cheat-val">flex</span></div>
+        <div class="cheat-row"><span class="cheat-prop">flex-direction</span><span class="cheat-val">row | column</span></div>
+        <div class="cheat-row"><span class="cheat-prop">justify-content</span><span class="cheat-val">center | space-between…</span></div>
+        <div class="cheat-row"><span class="cheat-prop">align-items</span><span class="cheat-val">center | flex-start…</span></div>
+        <div class="cheat-row"><span class="cheat-prop">flex-wrap</span><span class="cheat-val">wrap | nowrap</span></div>
+        <div class="cheat-row"><span class="cheat-prop">gap</span><span class="cheat-val">8px / 16px…</span></div>
+      </div>
+      <div class="cheat-card flex-card">
+        <h4>📦 Children (Items)</h4>
+        <div class="cheat-row"><span class="cheat-prop">flex</span><span class="cheat-val">1 (grow to fill)</span></div>
+        <div class="cheat-row"><span class="cheat-prop">flex-grow</span><span class="cheat-val">0 | 1 | 2…</span></div>
+        <div class="cheat-row"><span class="cheat-prop">flex-shrink</span><span class="cheat-val">0 | 1</span></div>
+        <div class="cheat-row"><span class="cheat-prop">flex-basis</span><span class="cheat-val">auto | 200px…</span></div>
+        <div class="cheat-row"><span class="cheat-prop">align-self</span><span class="cheat-val">override align-items</span></div>
+        <div class="cheat-row"><span class="cheat-prop">order</span><span class="cheat-val">0 | 1 | -1…</span></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:20px 0;">
+      <button class="btn btn-grid" onclick="showPage('grid')">Continue to CSS Grid →</button>
+    </div>
+  </div>
+</div>
+
+<!-- GRID PAGE -->
+<div class="page" id="page-grid">
+  <div class="lesson">
+    <div class="lesson-header">
+      <div class="badge badge-grid">Chapter 2</div>
+      <h2>CSS Grid</h2>
+      <p>Two-dimensional layout — control rows AND columns simultaneously. The most powerful layout system in CSS.</p>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-icon">🗺️</div>
+      <div class="analogy-text">
+        <h4>Think of it like a city map</h4>
+        <p>Grid is like city blocks — you define streets going across (columns) and streets going down (rows). Then you place buildings (elements) that can span multiple blocks. Flexbox is one street; Grid is the whole city.</p>
+      </div>
+    </div>
+
+    <!-- CONCEPT 1 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-grid">1</span> Define your grid columns & rows</div>
+      <p>Use <code style="font-family:'Fira Code',monospace;color:var(--grid-color)">grid-template-columns</code> to set how many columns and how wide they are. The <code style="font-family:'Fira Code',monospace;color:var(--grid-color)">fr</code> unit means "fraction of available space".</p>
+      <div class="code-block grid-code">
+        <pre><span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val-grid">grid</span>;
+  <span class="prop">grid-template-columns</span>: <span class="val-grid">1fr 1fr 1fr</span>;  <span class="comment">/* 3 equal columns */</span>
+  <span class="prop">grid-template-columns</span>: <span class="val-grid">repeat(3, 1fr)</span>; <span class="comment">/* same thing, shorter */</span>
+  <span class="prop">grid-template-columns</span>: <span class="val-grid">200px 1fr 1fr</span>;  <span class="comment">/* fixed + flexible */</span>
+  <span class="prop">gap</span>: <span class="val-grid">16px</span>;
+}</pre>
+      </div>
+    </div>
+
+    <!-- PLAYGROUND: grid columns -->
+    <div class="playground">
+      <div class="playground-header">
+        <span class="playground-title">⚡ Live Playground — <span>Grid Template Columns</span></span>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">grid-template-columns</span>
+          <select class="ctrl-select" id="g1-cols" onchange="updateG1()">
+            <option value="1fr 1fr">1fr 1fr</option>
+            <option value="repeat(3, 1fr)" selected>repeat(3, 1fr)</option>
+            <option value="repeat(4, 1fr)">repeat(4, 1fr)</option>
+            <option value="200px 1fr">200px 1fr</option>
+            <option value="1fr 2fr 1fr">1fr 2fr 1fr</option>
+            <option value="repeat(auto-fill, minmax(80px, 1fr))">auto-fill minmax</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">gap</span>
+          <select class="ctrl-select" id="g1-gap" onchange="updateG1()">
+            <option value="0">0px</option>
+            <option value="8px">8px</option>
+            <option value="16px" selected>16px</option>
+            <option value="24px">24px</option>
+          </select>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="preview-container" id="g1-preview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <div class="preview-box box-1" style="width:100%;height:52px">1</div>
+          <div class="preview-box box-2" style="width:100%;height:52px">2</div>
+          <div class="preview-box box-3" style="width:100%;height:52px">3</div>
+          <div class="preview-box box-4" style="width:100%;height:52px">4</div>
+          <div class="preview-box box-5" style="width:100%;height:52px">5</div>
+          <div class="preview-box box-6" style="width:100%;height:52px">6</div>
+        </div>
+      </div>
+      <div class="code-output" id="g1-code"></div>
+    </div>
+
+    <!-- CONCEPT 2 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-grid">2</span> Spanning columns & rows</div>
+      <p>Items can span multiple columns or rows using <code style="font-family:'Fira Code',monospace;color:var(--grid-color)">grid-column</code> and <code style="font-family:'Fira Code',monospace;color:var(--grid-color)">grid-row</code>. This is how you build complex layouts.</p>
+      <div class="code-block grid-code">
+        <pre><span class="sel">.big-item</span> {
+  <span class="prop">grid-column</span>: <span class="val-grid">span 2</span>;    <span class="comment">/* take up 2 columns */</span>
+  <span class="prop">grid-row</span>: <span class="val-grid">span 2</span>;       <span class="comment">/* take up 2 rows */</span>
+}
+
+<span class="sel">.full-width</span> {
+  <span class="prop">grid-column</span>: <span class="val-grid">1 / -1</span>;   <span class="comment">/* span ALL columns */</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- PLAYGROUND 2: spanning -->
+    <div class="playground">
+      <div class="playground-header">
+        <span class="playground-title">⚡ Live Playground — <span>Column & Row Spanning</span></span>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Item A spans</span>
+          <select class="ctrl-select" id="g2-span" onchange="updateG2()">
+            <option value="1">1 column</option>
+            <option value="2" selected>2 columns</option>
+            <option value="3">3 columns</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Layout preset</span>
+          <select class="ctrl-select" id="g2-preset" onchange="updateG2()">
+            <option value="repeat(3,1fr)">3 equal cols</option>
+            <option value="2fr 1fr 1fr">sidebar left</option>
+            <option value="1fr 1fr 2fr">sidebar right</option>
+          </select>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="preview-container" id="g2-preview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div class="preview-box box-1" id="g2-a" style="width:100%;height:52px;grid-column:span 2">A (spans 2)</div>
+          <div class="preview-box box-2" style="width:100%;height:52px">B</div>
+          <div class="preview-box box-3" style="width:100%;height:52px">C</div>
+          <div class="preview-box box-4" style="width:100%;height:52px">D</div>
+          <div class="preview-box box-5" style="width:100%;height:52px">E</div>
+        </div>
+      </div>
+      <div class="code-output" id="g2-code"></div>
+    </div>
+
+    <!-- CONCEPT 3 -->
+    <div class="concept">
+      <div class="concept-title"><span class="num num-grid">3</span> grid-template-areas — Name your layout</div>
+      <p>The most readable way to define a complex layout. Name each area, then assign elements to those areas by name.</p>
+      <div class="code-block grid-code">
+        <pre><span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val-grid">grid</span>;
+  <span class="prop">grid-template-areas</span>:
+    <span class="val-grid">"header header header"</span>
+    <span class="val-grid">"sidebar main main"</span>
+    <span class="val-grid">"footer footer footer"</span>;
+  <span class="prop">grid-template-columns</span>: <span class="val-grid">200px 1fr 1fr</span>;
+}
+
+<span class="sel">.header</span>  { <span class="prop">grid-area</span>: <span class="val-grid">header</span>; }
+<span class="sel">.sidebar</span> { <span class="prop">grid-area</span>: <span class="val-grid">sidebar</span>; }
+<span class="sel">.main</span>    { <span class="prop">grid-area</span>: <span class="val-grid">main</span>; }
+<span class="sel">.footer</span>  { <span class="prop">grid-area</span>: <span class="val-grid">footer</span>; }</pre>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Quick Reference</span></div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-card grid-card">
+        <h4>⊞ Parent (Container)</h4>
+        <div class="cheat-row"><span class="cheat-prop">display</span><span class="cheat-val">grid</span></div>
+        <div class="cheat-row"><span class="cheat-prop">grid-template-columns</span><span class="cheat-val">repeat(3, 1fr)</span></div>
+        <div class="cheat-row"><span class="cheat-prop">grid-template-rows</span><span class="cheat-val">auto | 200px</span></div>
+        <div class="cheat-row"><span class="cheat-prop">grid-template-areas</span><span class="cheat-val">"name name"</span></div>
+        <div class="cheat-row"><span class="cheat-prop">gap</span><span class="cheat-val">16px / 8px 16px</span></div>
+        <div class="cheat-row"><span class="cheat-prop">place-items</span><span class="cheat-val">center</span></div>
+      </div>
+      <div class="cheat-card grid-card">
+        <h4>⊞ Children (Items)</h4>
+        <div class="cheat-row"><span class="cheat-prop">grid-column</span><span class="cheat-val">span 2 | 1 / 3</span></div>
+        <div class="cheat-row"><span class="cheat-prop">grid-row</span><span class="cheat-val">span 2 | 1 / -1</span></div>
+        <div class="cheat-row"><span class="cheat-prop">grid-area</span><span class="cheat-val">header</span></div>
+        <div class="cheat-row"><span class="cheat-prop">justify-self</span><span class="cheat-val">start | center | end</span></div>
+        <div class="cheat-row"><span class="cheat-prop">align-self</span><span class="cheat-val">start | center | end</span></div>
+        <div class="cheat-row"><span class="cheat-prop">place-self</span><span class="cheat-val">center</span></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:20px 0;">
+      <button class="btn btn-flex" onclick="showPage('quiz')">Take the Quiz →</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ PAGE -->
+<div class="page" id="page-quiz">
+  <div class="lesson">
+    <div class="lesson-header">
+      <div class="badge badge-grid">Chapter 3</div>
+      <h2>Quick Quiz</h2>
+      <p>Test what you've learned. Click an answer to see instant feedback.</p>
+    </div>
+    <div id="quiz-container"></div>
+    <div id="quiz-score" style="display:none;text-align:center;padding:40px;background:var(--card);border:1px solid var(--border);">
+      <div style="font-size:3rem;margin-bottom:12px" id="score-emoji"></div>
+      <div style="font-family:'Fira Code',monospace;font-size:2rem;font-weight:700;color:var(--grid-color)" id="score-val"></div>
+      <div style="color:var(--muted);margin-top:8px;font-size:14px">questions correct</div>
+      <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-flex" onclick="showPage('flex')">Review Flexbox</button>
+        <button class="btn btn-grid" onclick="showPage('grid')">Review Grid</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- PAGE NAV ----
+const pages = ['home','flex','grid','quiz'];
+let progress = { flex: false, grid: false, quiz: false };
+
+function showPage(name) {
+  pages.forEach(p => {
+    document.getElementById('page-' + p).classList.toggle('active', p === name);
+    const tab = document.getElementById('tab-' + p);
+    if (tab) {
+      tab.classList.remove('active-flex', 'active-grid');
+      if (p === name) tab.classList.add(p === 'grid' || p === 'quiz' ? 'active-grid' : 'active-flex');
+    }
+  });
+  if (name !== 'home') progress[name] = true;
+  updateDots();
+  window.scrollTo(0, 0);
+}
+
+function updateDots() {
+  const container = document.getElementById('dots');
+  container.innerHTML = ['flex','grid','quiz'].map(p =>
+    `<div class="dot ${progress[p] ? 'done' : ''}"></div>`
+  ).join('');
+}
+
+// ---- PLAYGROUND 1: flex direction ----
+function updateP1() {
+  const dir = document.getElementById('p1-direction').value;
+  const jus = document.getElementById('p1-justify').value;
+  const ali = document.getElementById('p1-align').value;
+  const el = document.getElementById('p1-preview');
+  el.style.flexDirection = dir;
+  el.style.justifyContent = jus;
+  el.style.alignItems = ali;
+  document.getElementById('p1-code').innerHTML =
+    `.container {\n  display: <span class="highlight">flex</span>;\n  flex-direction: <span class="highlight">${dir}</span>;\n  justify-content: <span class="highlight">${jus}</span>;\n  align-items: <span class="highlight">${ali}</span>;\n}`;
+}
+updateP1();
+
+// ---- PLAYGROUND 2: flex wrap ----
+function updateP2() {
+  const wrap = document.getElementById('p2-wrap').value;
+  const gap = document.getElementById('p2-gap').value;
+  const el = document.getElementById('p2-preview');
+  el.style.flexWrap = wrap;
+  el.style.gap = gap;
+  document.getElementById('p2-code').innerHTML =
+    `.container {\n  display: <span class="highlight">flex</span>;\n  flex-wrap: <span class="highlight">${wrap}</span>;\n  gap: <span class="highlight">${gap}</span>;\n}`;
+}
+updateP2();
+
+// ---- GRID PLAYGROUND 1 ----
+function updateG1() {
+  const cols = document.getElementById('g1-cols').value;
+  const gap = document.getElementById('g1-gap').value;
+  const el = document.getElementById('g1-preview');
+  el.style.gridTemplateColumns = cols;
+  el.style.gap = gap;
+  document.getElementById('g1-code').innerHTML =
+    `.container {\n  display: <span class="highlight-g">grid</span>;\n  grid-template-columns: <span class="highlight-g">${cols}</span>;\n  gap: <span class="highlight-g">${gap}</span>;\n}`;
+}
+updateG1();
+
+// ---- GRID PLAYGROUND 2 ----
+function updateG2() {
+  const span = document.getElementById('g2-span').value;
+  const preset = document.getElementById('g2-preset').value;
+  const el = document.getElementById('g2-preview');
+  const a = document.getElementById('g2-a');
+  el.style.gridTemplateColumns = preset;
+  a.style.gridColumn = `span ${span}`;
+  a.textContent = `A (spans ${span})`;
+  document.getElementById('g2-code').innerHTML =
+    `.container { grid-template-columns: <span class="highlight-g">${preset}</span>; }\n.item-a { grid-column: <span class="highlight-g">span ${span}</span>; }`;
+}
+updateG2();
+
+// ---- QUIZ ----
+const questions = [
+  {
+    q: "Which property do you add to the PARENT to enable Flexbox?",
+    opts: ["flex: 1", "display: flex", "flex-wrap: wrap", "align-items: flex"],
+    correct: 1,
+    feedback: "✓ Correct! display: flex on the parent turns its direct children into flex items."
+  },
+  {
+    q: "What does justify-content control in a flex row?",
+    opts: ["Vertical alignment", "Item size", "Horizontal spacing along the row", "Item order"],
+    correct: 2,
+    feedback: "✓ Correct! justify-content controls spacing along the main axis (horizontal in a row)."
+  },
+  {
+    q: "How do you create 3 equal columns in CSS Grid?",
+    opts: ["columns: 3", "grid-template-columns: repeat(3, 1fr)", "display: grid-3", "flex: 3"],
+    correct: 1,
+    feedback: "✓ Correct! repeat(3, 1fr) creates 3 equal flexible columns."
+  },
+  {
+    q: "What does 'grid-column: span 2' do to an item?",
+    opts: ["Moves it to column 2", "Makes it take up 2 columns wide", "Doubles its height", "Hides column 2"],
+    correct: 1,
+    feedback: "✓ Correct! span 2 makes the item stretch across 2 column tracks."
+  },
+  {
+    q: "When should you use Flexbox over Grid?",
+    opts: [
+      "Full page layouts with rows AND columns",
+      "Lining up items in a single row or column",
+      "When you need named template areas",
+      "Always — Grid is too complex"
+    ],
+    correct: 1,
+    feedback: "✓ Correct! Flexbox is best for 1D layouts (single row or column). Use Grid for 2D layouts."
+  },
+  {
+    q: "Which shorthand perfectly centers one item inside a grid cell?",
+    opts: ["align: center", "flex: center center", "place-items: center", "margin: auto"],
+    correct: 2,
+    feedback: "✓ Correct! place-items: center is shorthand for align-items + justify-items — it centers everything."
+  }
+];
+
+let answers = new Array(questions.length).fill(null);
+let answered = new Array(questions.length).fill(false);
+
+const qc = document.getElementById('quiz-container');
+questions.forEach((q, qi) => {
+  const card = document.createElement('div');
+  card.className = 'quiz-card';
+  card.innerHTML = `
+    <div class="quiz-q">${qi + 1}. ${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o, oi) => `<button class="quiz-opt" onclick="answerQ(${qi}, ${oi})">${o}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qf-${qi}">${q.feedback}</div>
+  `;
+  qc.appendChild(card);
+});
+
+function answerQ(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  answers[qi] = oi;
+  const card = qc.children[qi];
+  const opts = card.querySelectorAll('.quiz-opt');
+  opts.forEach((o, i) => {
+    o.classList.add(i === questions[qi].correct ? 'correct' : 'wrong');
+    o.disabled = true;
+  });
+  document.getElementById('qf-' + qi).style.display = 'block';
+
+  if (answered.every(Boolean)) {
+    setTimeout(() => {
+      const score = answers.filter((a, i) => a === questions[i].correct).length;
+      document.getElementById('quiz-score').style.display = 'block';
+      document.getElementById('score-val').textContent = `${score} / ${questions.length}`;
+      document.getElementById('score-emoji').textContent = score === questions.length ? '🏆' : score >= 4 ? '🎉' : '📖';
+      document.getElementById('quiz-score').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 500);
+  }
+}
+
+// Init
+updateDots();
+</script>
+</body>
+</html>
