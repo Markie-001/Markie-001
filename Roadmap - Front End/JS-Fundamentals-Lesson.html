@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Fundamentals — Interactive Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #f2f0eb;
+  --card: #ffffff;
+  --border: #e0ddd6;
+  --ink: #1a1814;
+  --muted: #8a8578;
+  --js: #e8a020;
+  --js-light: #fef3dc;
+  --js-border: #f5d08a;
+  --green: #1a7a4a;
+  --green-light: #e8f5ee;
+  --red: #c0392b;
+  --red-light: #fdecea;
+  --blue: #1a4fa0;
+  --blue-light: #e8f0fc;
+  --purple: #6a1a9a;
+  --purple-light: #f3e8fc;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  line-height: 1.6;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(250,249,246,0.96);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--ink);
+  display: flex; align-items: stretch;
+  overflow-x: auto;
+}
+
+.nav-brand {
+  padding: 0 20px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--js);
+  border-right: 2px solid var(--ink);
+  display: flex; align-items: center;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+.nav-tab {
+  padding: 14px 16px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: color .15s, border-color .15s, background .15s;
+  flex-shrink: 0;
+}
+
+.nav-tab:hover { color: var(--ink); background: var(--surface); }
+.nav-tab.active { color: var(--ink); border-bottom-color: var(--js); background: var(--js-light); }
+
+.nav-progress {
+  margin-left: auto; display: flex;
+  align-items: center; gap: 5px; padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.ndot { width:8px; height:8px; border-radius:50%; background: var(--border); transition: background .3s; }
+.ndot.done { background: var(--green); }
+.ndot.cur  { background: var(--js); }
+
+/* ── PAGES ── */
+.page { display:none; }
+.page.active { display:block; }
+
+/* ── HERO ── */
+.hero {
+  padding: 72px 48px 56px;
+  max-width: 880px; margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--js); margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(3rem,7vw,5.5rem);
+  font-weight: 800; line-height: .95;
+  letter-spacing: -3px; color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.hero h1 em { font-style: italic; font-weight: 300; color: var(--muted); }
+
+.hero-desc {
+  font-size: 1.1rem; color: var(--muted);
+  max-width: 520px; margin-bottom: 36px;
+}
+
+.chapters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.chapter-btn {
+  padding: 16px 18px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  text-align: left; cursor: pointer;
+  transition: border-color .15s, transform .15s;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.chapter-btn:hover { border-color: var(--js); transform: translateY(-2px); }
+
+.ch-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--js);
+  letter-spacing: 2px; margin-bottom: 6px;
+}
+
+.ch-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+
+/* ── LESSON WRAPPER ── */
+.lesson { max-width: 880px; margin: 0 auto; padding: 0 32px 100px; }
+
+.lesson-hdr {
+  padding: 40px 0 28px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 40px;
+}
+
+.lesson-hdr .tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  background: var(--js-light); color: var(--js);
+  border: 1px solid var(--js-border);
+  padding: 4px 10px; margin-bottom: 12px;
+}
+
+.lesson-hdr h2 {
+  font-size: clamp(2rem,5vw,3.5rem);
+  font-weight: 800; letter-spacing: -2px;
+  color: var(--ink); margin-bottom: 8px;
+}
+
+.lesson-hdr p { color: var(--muted); font-size: 1rem; max-width: 560px; }
+
+/* ── CONCEPT ── */
+.concept { margin-bottom: 44px; }
+
+.concept-hdr {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+
+.concept-hdr .num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--js-light); border: 2px solid var(--js-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--js);
+  flex-shrink: 0;
+}
+
+.concept-hdr h3 {
+  font-size: 1.2rem; font-weight: 700; color: var(--ink);
+}
+
+.concept > p, .concept > ul {
+  color: var(--muted); font-size: .95rem;
+  margin-bottom: 16px; padding-left: 44px;
+  max-width: 640px;
+}
+
+.concept > ul { padding-left: 60px; }
+.concept > ul li { margin-bottom: 4px; }
+
+/* ── CODE ── */
+.code {
+  background: var(--ink);
+  border-radius: 0;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.code-label {
+  padding: 8px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.35);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.code pre {
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; line-height: 1.9;
+  color: #cdd9e5; white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.kw  { color: #ff7eb6; }
+.ty  { color: #ffd700; }
+.str { color: #7ec8a4; }
+.num { color: #f9a87a; }
+.fn  { color: #79b8ff; }
+.cm  { color: #546e7a; font-style:italic; }
+.sel { color: #ff9f43; }
+.prop{ color: #c3e88d; }
+
+/* ── PLAYGROUND ── */
+.playground {
+  background: var(--card);
+  border: 2px solid var(--border);
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.pg-header {
+  padding: 12px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.pg-title {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pg-title strong { color: var(--ink); }
+
+.pg-run-btn {
+  padding: 6px 16px;
+  background: var(--js); color: var(--ink);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px; font-weight: 700;
+  border: none; cursor: pointer;
+  letter-spacing: 1px;
+  transition: opacity .15s;
+}
+
+.pg-run-btn:hover { opacity: .8; }
+
+.pg-editor {
+  width: 100%;
+  min-height: 140px;
+  padding: 18px 20px;
+  background: #1a1814;
+  color: #cdd9e5;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; line-height: 1.9;
+  border: none; outline: none;
+  resize: vertical;
+  tab-size: 2;
+}
+
+.pg-output {
+  padding: 14px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--muted);
+  min-height: 44px; line-height: 1.8;
+}
+
+.pg-output.has-result { color: var(--ink); }
+.pg-output .out-line { padding: 1px 0; }
+.pg-output .out-ok { color: var(--green); }
+.pg-output .out-err { color: var(--red); }
+
+/* ── CALLOUT ── */
+.callout {
+  display: flex; gap: 14px;
+  padding: 18px 20px;
+  margin-bottom: 28px;
+  border-left: 4px solid;
+}
+
+.callout.info  { background: var(--blue-light);   border-color: var(--blue);   }
+.callout.warn  { background: var(--js-light);      border-color: var(--js);     }
+.callout.tip   { background: var(--green-light);   border-color: var(--green);  }
+.callout.danger{ background: var(--red-light);     border-color: var(--red);    }
+
+.callout-icon { font-size: 1.3rem; flex-shrink:0; margin-top:1px; }
+.callout-body h4 { font-size:14px; font-weight:700; margin-bottom:4px; }
+.callout-body p  { font-size:13px; color: var(--muted); line-height:1.6; }
+.callout-body code { font-family:'JetBrains Mono',monospace; font-size:12px; background:rgba(0,0,0,0.08); padding:1px 5px; }
+
+/* ── TABLE ── */
+.ref-table { width:100%; border-collapse:collapse; margin-bottom:32px; font-size:13px; }
+.ref-table th {
+  text-align:left; padding:10px 14px;
+  background: var(--ink); color: var(--bg);
+  font-size:11px; letter-spacing:2px; text-transform:uppercase;
+}
+.ref-table td { padding:10px 14px; border-bottom:1px solid var(--border); }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table tr:hover td { background: var(--surface); }
+.ref-table code { font-family:'JetBrains Mono',monospace; font-size:12px; color: var(--blue); }
+
+/* ── INTERACTIVE DEMO ── */
+.demo-box {
+  background: var(--card);
+  border: 2px solid var(--border);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.demo-box h4 {
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--muted); margin-bottom: 16px;
+}
+
+.demo-input {
+  width: 100%; padding: 10px 14px;
+  border: 2px solid var(--border); background: var(--surface);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 15px; outline: none;
+  transition: border-color .15s;
+}
+.demo-input:focus { border-color: var(--js); }
+
+.demo-btn {
+  padding: 10px 22px;
+  background: var(--ink); color: var(--bg);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px; font-weight: 700;
+  border: none; cursor: pointer;
+  transition: opacity .15s;
+  margin-top: 10px;
+}
+.demo-btn:hover { opacity: .8; }
+
+.demo-output {
+  margin-top: 14px; padding: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; color: var(--muted);
+  min-height: 44px; line-height: 1.8;
+}
+
+/* ── SECTION DIVIDER ── */
+.divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 40px 0 32px;
+}
+.divider span {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted); white-space: nowrap;
+}
+.divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--border); }
+
+/* ── QUIZ ── */
+.quiz-q-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  padding: 24px; margin-bottom: 16px;
+}
+.quiz-q-text { font-size:1rem; font-weight:700; margin-bottom:14px; }
+.quiz-opts { display:flex; flex-direction:column; gap:8px; }
+
+.qopt {
+  padding: 10px 16px;
+  background: var(--surface); border: 2px solid var(--border);
+  font-family:'Bricolage Grotesque',sans-serif; font-size:13px;
+  cursor:pointer; text-align:left;
+  transition: border-color .15s, background .15s;
+}
+.qopt:hover { border-color: var(--js); }
+.qopt.correct { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight:700; }
+.qopt.wrong   { background: var(--red-light);   border-color: var(--red);   color: var(--red); }
+
+.quiz-fb {
+  margin-top: 12px; padding: 12px 16px;
+  background: var(--green-light);
+  border-left: 4px solid var(--green);
+  font-size: 13px; color: var(--muted);
+  display: none;
+}
+
+/* ── NAV BTNS ── */
+.nav-btns { display:flex; gap:12px; flex-wrap:wrap; padding: 24px 0 0; }
+.nbtn {
+  padding: 12px 24px;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:14px; font-weight:700;
+  cursor:pointer; border:none; transition:opacity .15s;
+}
+.nbtn:hover { opacity:.8; }
+.nbtn-js   { background:var(--js);  color:var(--ink); }
+.nbtn-dark { background:var(--ink); color:var(--bg);  }
+.nbtn-out  { background:transparent; color:var(--ink); border:2px solid var(--ink); }
+
+@media(max-width:640px){
+  .hero,.lesson{ padding-left:20px; padding-right:20px; }
+  .hero{ padding-top:40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">JS Fundamentals</div>
+  <div class="nav-tab active" id="t0" onclick="go(0)">Home</div>
+  <div class="nav-tab" id="t1" onclick="go(1)">1 · Variables</div>
+  <div class="nav-tab" id="t2" onclick="go(2)">2 · Functions</div>
+  <div class="nav-tab" id="t3" onclick="go(3)">3 · DOM</div>
+  <div class="nav-tab" id="t4" onclick="go(4)">4 · Events</div>
+  <div class="nav-tab" id="t5" onclick="go(5)">5 · Arrays & Objects</div>
+  <div class="nav-tab" id="t6" onclick="go(6)">✓ Quiz</div>
+  <div class="nav-progress" id="ndots"></div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE 0 — HOME
+══════════════════════════════════════ -->
+<div class="page active" id="p0">
+  <div class="hero">
+    <div class="hero-eyebrow">Interactive Course · 2026</div>
+    <h1>Java<em>Script</em><br>Funda<em>mentals</em></h1>
+    <p class="hero-desc">Five core chapters to go from zero to writing real JavaScript — with live code editors and instant feedback in every lesson.</p>
+    <div class="chapters">
+      <div class="chapter-btn" onclick="go(1)"><div class="ch-num">CH 01</div><div class="ch-name">Variables & Types</div></div>
+      <div class="chapter-btn" onclick="go(2)"><div class="ch-num">CH 02</div><div class="ch-name">Functions & Scope</div></div>
+      <div class="chapter-btn" onclick="go(3)"><div class="ch-num">CH 03</div><div class="ch-name">DOM Manipulation</div></div>
+      <div class="chapter-btn" onclick="go(4)"><div class="ch-num">CH 04</div><div class="ch-name">Events & Listeners</div></div>
+      <div class="chapter-btn" onclick="go(5)"><div class="ch-num">CH 05</div><div class="ch-name">Arrays & Objects</div></div>
+      <div class="chapter-btn" onclick="go(6)"><div class="ch-num">QUIZ</div><div class="ch-name">Test Your Knowledge</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — VARIABLES & TYPES
+══════════════════════════════════════ -->
+<div class="page" id="p1">
+<div class="lesson">
+  <div class="lesson-hdr">
+    <div class="tag">Chapter 01</div>
+    <h2>Variables & Types</h2>
+    <p>The building blocks of every program. Variables store data; types describe what kind of data it is.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">1</span><h3>Declaring Variables — let, const, var</h3></div>
+    <p>Use <code style="font-family:JetBrains Mono,monospace">const</code> by default. Use <code style="font-family:JetBrains Mono,monospace">let</code> when the value will change. Avoid <code style="font-family:JetBrains Mono,monospace">var</code> — it's outdated.</p>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">const</span> name = <span class="str">"Alice"</span>;        <span class="cm">// can't be reassigned</span>
+<span class="kw">let</span>   score = <span class="num">0</span>;            <span class="cm">// can be reassigned later</span>
+<span class="kw">var</span>   old = <span class="str">"avoid this"</span>;   <span class="cm">// old way — has quirks</span>
+
+score = <span class="num">10</span>;   <span class="cm">// ✓ works — let allows this</span>
+<span class="cm">// name = "Bob"  ✗ ERROR — const can't change</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">2</span><h3>The 7 Data Types</h3></div>
+    <div class="code"><div class="code-label">javascript — primitive types</div><pre><span class="kw">const</span> text    = <span class="str">"Hello"</span>;       <span class="cm">// String</span>
+<span class="kw">const</span> age     = <span class="num">25</span>;            <span class="cm">// Number (int or float)</span>
+<span class="kw">const</span> price   = <span class="num">9.99</span>;         <span class="cm">// Number</span>
+<span class="kw">const</span> active  = <span class="kw">true</span>;         <span class="cm">// Boolean</span>
+<span class="kw">const</span> nothing = <span class="kw">null</span>;         <span class="cm">// Null (intentionally empty)</span>
+<span class="kw">let</span>   undef;                   <span class="cm">// Undefined (not set yet)</span>
+<span class="kw">const</span> id      = <span class="fn">Symbol</span>(<span class="str">"id"</span>); <span class="cm">// Symbol (unique)</span>
+
+<span class="cm">// Check the type:</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> text);   <span class="cm">// "string"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> age);    <span class="cm">// "number"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> active); <span class="cm">// "boolean"</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">3</span><h3>String Operations</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">const</span> first = <span class="str">"John"</span>;
+<span class="kw">const</span> last  = <span class="str">"Doe"</span>;
+
+<span class="cm">// Template literals (backticks) — the modern way</span>
+<span class="kw">const</span> full = <span class="str">`</span><span class="fn">${first}</span><span class="str"> </span><span class="fn">${last}</span><span class="str">`</span>;   <span class="cm">// "John Doe"</span>
+<span class="kw">const</span> msg  = <span class="str">`Hello, </span><span class="fn">${first}</span><span class="str">!`</span>;  <span class="cm">// "Hello, John!"</span>
+
+<span class="cm">// Useful string methods</span>
+<span class="str">"hello"</span>.<span class="fn">toUpperCase</span>();  <span class="cm">// "HELLO"</span>
+<span class="str">"  hi  "</span>.<span class="fn">trim</span>();       <span class="cm">// "hi"</span>
+<span class="str">"cat"</span>.<span class="fn">includes</span>(<span class="str">"at"</span>);  <span class="cm">// true</span>
+<span class="str">"abc"</span>.<span class="fn">length</span>;          <span class="cm">// 3</span></pre></div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <h4>== vs ===</h4>
+      <p>Always use <code>===</code> (strict equality). It checks value AND type. <code>==</code> does weird type coercion — <code>"5" == 5</code> is <code>true</code>, which is almost never what you want.</p>
+    </div>
+  </div>
+
+  <div class="playground">
+    <div class="pg-header">
+      <span class="pg-title">⚡ Try it — <strong>Variables & Types</strong></span>
+      <button class="pg-run-btn" onclick="runPG('pg1')">▶ Run</button>
+    </div>
+    <textarea class="pg-editor" id="pg1-code" spellcheck="false">const name = "Alex";
+const age = 22;
+const isStudent = true;
+
+console.log(`Name: ${name}`);
+console.log(`Age: ${age}`);
+console.log(`Type of age: ${typeof age}`);
+console.log(`Is student: ${isStudent}`);
+console.log(`In 5 years: ${age + 5}`);</textarea>
+    <div class="pg-output" id="pg1-out">// Output will appear here after clicking ▶ Run</div>
+  </div>
+
+  <table class="ref-table">
+    <tr><th>Type</th><th>Example</th><th>typeof result</th></tr>
+    <tr><td>String</td><td><code>"hello"</code></td><td><code>"string"</code></td></tr>
+    <tr><td>Number</td><td><code>42</code> / <code>3.14</code></td><td><code>"number"</code></td></tr>
+    <tr><td>Boolean</td><td><code>true</code> / <code>false</code></td><td><code>"boolean"</code></td></tr>
+    <tr><td>Null</td><td><code>null</code></td><td><code>"object"</code> ⚠️</td></tr>
+    <tr><td>Undefined</td><td><code>undefined</code></td><td><code>"undefined"</code></td></tr>
+    <tr><td>Array</td><td><code>[1,2,3]</code></td><td><code>"object"</code></td></tr>
+    <tr><td>Object</td><td><code>{a: 1}</code></td><td><code>"object"</code></td></tr>
+  </table>
+
+  <div class="nav-btns">
+    <button class="nbtn nbtn-js" onclick="go(2)">Next: Functions & Scope →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — FUNCTIONS & SCOPE
+══════════════════════════════════════ -->
+<div class="page" id="p2">
+<div class="lesson">
+  <div class="lesson-hdr">
+    <div class="tag">Chapter 02</div>
+    <h2>Functions & Scope</h2>
+    <p>Functions are reusable blocks of code. Scope controls where variables can be accessed.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">1</span><h3>Three Ways to Write a Function</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="cm">// 1. Function declaration (hoisted — usable before definition)</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name) {
+  <span class="kw">return</span> <span class="str">`Hello, </span><span class="fn">${name}</span><span class="str">!`</span>;
+}
+
+<span class="cm">// 2. Function expression (not hoisted)</span>
+<span class="kw">const</span> greet2 = <span class="kw">function</span>(name) {
+  <span class="kw">return</span> <span class="str">`Hello, </span><span class="fn">${name}</span><span class="str">!`</span>;
+};
+
+<span class="cm">// 3. Arrow function (modern — most common today)</span>
+<span class="kw">const</span> <span class="fn">greet3</span> = (name) => <span class="str">`Hello, </span><span class="fn">${name}</span><span class="str">!`</span>;
+
+<span class="cm">// Call any of them the same way:</span>
+<span class="fn">greet</span>(<span class="str">"Alice"</span>);   <span class="cm">// "Hello, Alice!"</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">2</span><h3>Parameters, Arguments & Default Values</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="cm">// Parameters are the variable names in the definition</span>
+<span class="cm">// Arguments are the actual values you pass in</span>
+<span class="kw">const</span> <span class="fn">add</span> = (a, b) => a + b;
+<span class="fn">add</span>(<span class="num">3</span>, <span class="num">4</span>);  <span class="cm">// 7  — 3 and 4 are the arguments</span>
+
+<span class="cm">// Default parameter values</span>
+<span class="kw">const</span> <span class="fn">greet</span> = (name = <span class="str">"stranger"</span>) => <span class="str">`Hi, </span><span class="fn">${name}</span><span class="str">!`</span>;
+<span class="fn">greet</span>();          <span class="cm">// "Hi, stranger!"</span>
+<span class="fn">greet</span>(<span class="str">"Bob"</span>);    <span class="cm">// "Hi, Bob!"</span>
+
+<span class="cm">// Functions can return anything</span>
+<span class="kw">const</span> <span class="fn">double</span> = n => n * <span class="num">2</span>;
+<span class="fn">double</span>(<span class="num">5</span>);   <span class="cm">// 10</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">3</span><h3>Scope — Where Can Variables Be Seen?</h3></div>
+    <p>Variables declared with <code style="font-family:JetBrains Mono,monospace">const</code> or <code style="font-family:JetBrains Mono,monospace">let</code> only exist inside the block <code style="font-family:JetBrains Mono,monospace">{ }</code> they were created in.</p>
+    <div class="code"><div class="code-label">javascript — scope example</div><pre><span class="kw">const</span> globalVar = <span class="str">"I'm everywhere"</span>;  <span class="cm">// global scope</span>
+
+<span class="kw">function</span> <span class="fn">myFunc</span>() {
+  <span class="kw">const</span> localVar = <span class="str">"only inside here"</span>; <span class="cm">// function scope</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(globalVar);  <span class="cm">// ✓ can see global</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(localVar);   <span class="cm">// ✓ can see local</span>
+}
+
+<span class="cm">// console.log(localVar)  ✗ ERROR — localVar doesn't exist here</span>
+
+<span class="kw">if</span> (<span class="kw">true</span>) {
+  <span class="kw">const</span> blockVar = <span class="str">"block scoped"</span>;
+  <span class="cm">// blockVar only lives inside this if block</span>
+}
+<span class="cm">// console.log(blockVar)  ✗ ERROR</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">4</span><h3>Closures (Powerful!) </h3></div>
+    <p>A function "remembers" the variables from the scope it was created in, even after that scope is gone.</p>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">function</span> <span class="fn">makeCounter</span>() {
+  <span class="kw">let</span> count = <span class="num">0</span>;                    <span class="cm">// this variable is "remembered"</span>
+  <span class="kw">return</span> () => {
+    count++;
+    <span class="kw">return</span> count;
+  };
+}
+
+<span class="kw">const</span> counter = <span class="fn">makeCounter</span>();
+<span class="fn">counter</span>();  <span class="cm">// 1</span>
+<span class="fn">counter</span>();  <span class="cm">// 2</span>
+<span class="fn">counter</span>();  <span class="cm">// 3  — count persists!</span></pre></div>
+  </div>
+
+  <div class="playground">
+    <div class="pg-header">
+      <span class="pg-title">⚡ Try it — <strong>Functions</strong></span>
+      <button class="pg-run-btn" onclick="runPG('pg2')">▶ Run</button>
+    </div>
+    <textarea class="pg-editor" id="pg2-code" spellcheck="false">// Arrow function with default param
+const greet = (name = "World") => `Hello, ${name}!`;
+
+// Function that calculates
+const calcArea = (w, h) => w * h;
+
+// Closure counter
+function makeCounter() {
+  let count = 0;
+  return () => ++count;
+}
+
+console.log(greet());
+console.log(greet("Claude"));
+console.log("Area:", calcArea(5, 3));
+
+const counter = makeCounter();
+console.log(counter(), counter(), counter());</textarea>
+    <div class="pg-output" id="pg2-out">// Output will appear here after clicking ▶ Run</div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nbtn nbtn-out" onclick="go(1)">← Variables</button>
+    <button class="nbtn nbtn-js" onclick="go(3)">Next: DOM Manipulation →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — DOM MANIPULATION
+══════════════════════════════════════ -->
+<div class="page" id="p3">
+<div class="lesson">
+  <div class="lesson-hdr">
+    <div class="tag">Chapter 03</div>
+    <h2>DOM Manipulation</h2>
+    <p>The DOM (Document Object Model) is JavaScript's interface to the HTML page. You can read, change, add, or remove any element.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">🌳</div>
+    <div class="callout-body">
+      <h4>What is the DOM?</h4>
+      <p>When a browser loads HTML, it creates a tree of objects called the DOM. JavaScript can access this tree to read or change any element on the page — that's how dynamic websites work.</p>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">1</span><h3>Selecting Elements</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="cm">// querySelector — select ONE element (CSS selector syntax)</span>
+<span class="kw">const</span> title  = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"h1"</span>);
+<span class="kw">const</span> btn    = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"#myButton"</span>);   <span class="cm">// by id</span>
+<span class="kw">const</span> card   = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">".card"</span>);      <span class="cm">// by class</span>
+
+<span class="cm">// querySelectorAll — select MULTIPLE elements → NodeList</span>
+<span class="kw">const</span> allBtns = <span class="fn">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">"button"</span>);
+<span class="kw">const</span> items   = <span class="fn">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">".item"</span>);
+
+<span class="cm">// Loop over results</span>
+items.<span class="fn">forEach</span>(item => <span class="fn">console</span>.<span class="fn">log</span>(item.<span class="prop">textContent</span>));</pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">2</span><h3>Reading & Changing Content</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">const</span> el = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"#myDiv"</span>);
+
+<span class="cm">// Read / write text</span>
+<span class="fn">console</span>.<span class="fn">log</span>(el.<span class="prop">textContent</span>);         <span class="cm">// read</span>
+el.<span class="prop">textContent</span> = <span class="str">"New text!"</span>;       <span class="cm">// write text</span>
+
+<span class="cm">// Read / write HTML</span>
+el.<span class="prop">innerHTML</span> = <span class="str">"&lt;strong&gt;Bold!&lt;/strong&gt;"</span>;
+
+<span class="cm">// Read / write CSS styles</span>
+el.<span class="prop">style</span>.<span class="prop">color</span>       = <span class="str">"red"</span>;
+el.<span class="prop">style</span>.<span class="prop">fontSize</span>    = <span class="str">"24px"</span>;
+el.<span class="prop">style</span>.<span class="prop">display</span>     = <span class="str">"none"</span>;    <span class="cm">// hide</span>
+
+<span class="cm">// Toggle CSS classes (best practice!)</span>
+el.<span class="prop">classList</span>.<span class="fn">add</span>(<span class="str">"active"</span>);
+el.<span class="prop">classList</span>.<span class="fn">remove</span>(<span class="str">"active"</span>);
+el.<span class="prop">classList</span>.<span class="fn">toggle</span>(<span class="str">"active"</span>);    <span class="cm">// add if missing, remove if present</span>
+el.<span class="prop">classList</span>.<span class="fn">contains</span>(<span class="str">"active"</span>); <span class="cm">// true/false</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">3</span><h3>Creating & Removing Elements</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="cm">// Create a new element</span>
+<span class="kw">const</span> newItem = <span class="fn">document</span>.<span class="fn">createElement</span>(<span class="str">"li"</span>);
+newItem.<span class="prop">textContent</span> = <span class="str">"New list item"</span>;
+newItem.<span class="prop">classList</span>.<span class="fn">add</span>(<span class="str">"item"</span>);
+
+<span class="cm">// Add to the page</span>
+<span class="kw">const</span> list = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"ul"</span>);
+list.<span class="fn">appendChild</span>(newItem);     <span class="cm">// add at end</span>
+list.<span class="fn">prepend</span>(newItem);         <span class="cm">// add at start</span>
+
+<span class="cm">// Remove an element</span>
+newItem.<span class="fn">remove</span>();              <span class="cm">// removes itself</span>
+
+<span class="cm">// Read/write attributes</span>
+<span class="kw">const</span> img = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"img"</span>);
+img.<span class="fn">getAttribute</span>(<span class="str">"src"</span>);
+img.<span class="fn">setAttribute</span>(<span class="str">"alt"</span>, <span class="str">"A photo"</span>);</pre></div>
+  </div>
+
+  <!-- LIVE DOM DEMO -->
+  <div class="demo-box">
+    <h4>🎮 Live DOM Demo — Click to see it in action</h4>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="demo-btn" onclick="domDemo('text')">Change Text</button>
+      <button class="demo-btn" onclick="domDemo('style')">Change Style</button>
+      <button class="demo-btn" onclick="domDemo('add')">Add Element</button>
+      <button class="demo-btn" onclick="domDemo('toggle')">Toggle Class</button>
+      <button class="demo-btn" onclick="domDemo('reset')" style="background:var(--muted)">Reset</button>
+    </div>
+    <div id="dom-target" style="padding:16px;background:var(--surface);border:2px solid var(--border);font-size:15px;font-weight:600;transition:all .3s;">
+      I'm a DOM element — click the buttons above!
+    </div>
+    <ul id="dom-list" style="margin-top:10px;padding-left:20px;font-size:13px;color:var(--muted)"></ul>
+    <div class="demo-output" id="dom-code-out">// Code executed will appear here</div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nbtn nbtn-out" onclick="go(2)">← Functions</button>
+    <button class="nbtn nbtn-js" onclick="go(4)">Next: Events →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 4 — EVENTS & LISTENERS
+══════════════════════════════════════ -->
+<div class="page" id="p4">
+<div class="lesson">
+  <div class="lesson-hdr">
+    <div class="tag">Chapter 04</div>
+    <h2>Events & Listeners</h2>
+    <p>Events are things that happen in the browser — clicks, keypresses, mouse moves. Listeners let you react to them.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">1</span><h3>addEventListener — The Right Way</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">const</span> btn = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"#myBtn"</span>);
+
+<span class="cm">// Syntax: element.addEventListener(event, callback)</span>
+btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () => {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Button clicked!"</span>);
+});
+
+<span class="cm">// Named function (easier to remove later)</span>
+<span class="kw">const</span> <span class="fn">handleClick</span> = () => <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"clicked"</span>);
+btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, handleClick);
+btn.<span class="fn">removeEventListener</span>(<span class="str">"click"</span>, handleClick); <span class="cm">// remove it</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">2</span><h3>The Event Object</h3></div>
+    <p>Every event listener receives an <strong>event object</strong> (<code style="font-family:JetBrains Mono,monospace">e</code> or <code style="font-family:JetBrains Mono,monospace">event</code>) with useful info about what happened.</p>
+    <div class="code"><div class="code-label">javascript</div><pre>btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (e) => {
+  <span class="fn">console</span>.<span class="fn">log</span>(e.<span class="prop">target</span>);          <span class="cm">// the element that was clicked</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(e.<span class="prop">target</span>.<span class="prop">id</span>);       <span class="cm">// its id attribute</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(e.<span class="prop">type</span>);            <span class="cm">// "click"</span>
+  e.<span class="fn">preventDefault</span>();             <span class="cm">// stop default behavior (e.g. form submit)</span>
+});
+
+<span class="cm">// Input events — reading what the user types</span>
+<span class="kw">const</span> input = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"input"</span>);
+input.<span class="fn">addEventListener</span>(<span class="str">"input"</span>, (e) => {
+  <span class="fn">console</span>.<span class="fn">log</span>(e.<span class="prop">target</span>.<span class="prop">value</span>);    <span class="cm">// current text in input</span>
+});</pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">3</span><h3>Common Event Types</h3></div>
+    <table class="ref-table">
+      <tr><th>Event</th><th>When it fires</th><th>Used on</th></tr>
+      <tr><td><code>click</code></td><td>User clicks</td><td>Any element</td></tr>
+      <tr><td><code>input</code></td><td>Value changes</td><td>input, textarea</td></tr>
+      <tr><td><code>submit</code></td><td>Form submitted</td><td>form</td></tr>
+      <tr><td><code>keydown</code></td><td>Key pressed</td><td>input, document</td></tr>
+      <tr><td><code>mouseover</code></td><td>Mouse enters</td><td>Any element</td></tr>
+      <tr><td><code>mouseout</code></td><td>Mouse leaves</td><td>Any element</td></tr>
+      <tr><td><code>DOMContentLoaded</code></td><td>HTML parsed</td><td>document</td></tr>
+      <tr><td><code>load</code></td><td>Page fully loaded</td><td>window</td></tr>
+    </table>
+  </div>
+
+  <!-- LIVE EVENT DEMO -->
+  <div class="demo-box">
+    <h4>🎮 Live Events Demo</h4>
+    <input class="demo-input" id="evt-input" placeholder="Type something here..." />
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <button class="demo-btn" id="evt-btn">Click Me</button>
+      <button class="demo-btn" id="evt-btn2" style="background:var(--surface);color:var(--ink);border:2px solid var(--border)">Hover Me</button>
+    </div>
+    <div class="demo-output" id="evt-log" style="font-size:11px;line-height:2">// Events will be logged here...</div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">4</span><h3>Event Delegation — One listener for many elements</h3></div>
+    <p>Instead of adding listeners to every child, listen on the parent and check <code style="font-family:JetBrains Mono,monospace">e.target</code>. Much more efficient!</p>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="cm">// ❌ Inefficient — 100 listeners for 100 items</span>
+items.<span class="fn">forEach</span>(item => item.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, handler));
+
+<span class="cm">// ✅ Efficient — 1 listener on the parent</span>
+<span class="kw">const</span> list = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"ul"</span>);
+list.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (e) => {
+  <span class="kw">if</span> (e.<span class="prop">target</span>.<span class="fn">matches</span>(<span class="str">"li"</span>)) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Clicked: "</span> + e.<span class="prop">target</span>.<span class="prop">textContent</span>);
+  }
+});</pre></div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nbtn nbtn-out" onclick="go(3)">← DOM</button>
+    <button class="nbtn nbtn-js" onclick="go(5)">Next: Arrays & Objects →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 5 — ARRAYS & OBJECTS
+══════════════════════════════════════ -->
+<div class="page" id="p5">
+<div class="lesson">
+  <div class="lesson-hdr">
+    <div class="tag">Chapter 05</div>
+    <h2>Arrays & Objects</h2>
+    <p>Arrays store ordered lists. Objects store named properties. Together they represent almost all real-world data.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">1</span><h3>Arrays — Ordered Lists</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">const</span> fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>];
+
+fruits[<span class="num">0</span>];          <span class="cm">// "apple"  (zero-indexed!)</span>
+fruits.<span class="prop">length</span>;      <span class="cm">// 3</span>
+
+<span class="cm">// Add / remove</span>
+fruits.<span class="fn">push</span>(<span class="str">"mango"</span>);   <span class="cm">// add to end   → ["apple","banana","cherry","mango"]</span>
+fruits.<span class="fn">pop</span>();           <span class="cm">// remove last  → ["apple","banana","cherry"]</span>
+fruits.<span class="fn">unshift</span>(<span class="str">"kiwi"</span>); <span class="cm">// add to front</span>
+fruits.<span class="fn">shift</span>();          <span class="cm">// remove first</span>
+
+<span class="cm">// Check if item exists</span>
+fruits.<span class="fn">includes</span>(<span class="str">"banana"</span>);   <span class="cm">// true</span>
+fruits.<span class="fn">indexOf</span>(<span class="str">"cherry"</span>);    <span class="cm">// 2</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">2</span><h3>The 4 Array Superpowers — map, filter, find, reduce</h3></div>
+    <div class="code"><div class="code-label">javascript — these are used constantly in real code</div><pre><span class="kw">const</span> nums = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>];
+
+<span class="cm">// map → transform every item → returns NEW array</span>
+<span class="kw">const</span> doubled = nums.<span class="fn">map</span>(n => n * <span class="num">2</span>);   <span class="cm">// [2,4,6,8,10]</span>
+
+<span class="cm">// filter → keep items that pass a test → returns NEW array</span>
+<span class="kw">const</span> evens = nums.<span class="fn">filter</span>(n => n % <span class="num">2</span> === <span class="num">0</span>); <span class="cm">// [2,4]</span>
+
+<span class="cm">// find → get the FIRST match (single item)</span>
+<span class="kw">const</span> big = nums.<span class="fn">find</span>(n => n > <span class="num">3</span>);    <span class="cm">// 4</span>
+
+<span class="cm">// reduce → collapse array to a single value</span>
+<span class="kw">const</span> total = nums.<span class="fn">reduce</span>((sum, n) => sum + n, <span class="num">0</span>); <span class="cm">// 15</span>
+
+<span class="cm">// forEach → loop without returning (for side effects)</span>
+nums.<span class="fn">forEach</span>(n => <span class="fn">console</span>.<span class="fn">log</span>(n));</pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">3</span><h3>Objects — Named Properties</h3></div>
+    <div class="code"><div class="code-label">javascript</div><pre><span class="kw">const</span> user = {
+  name:  <span class="str">"Alice"</span>,
+  age:   <span class="num">28</span>,
+  email: <span class="str">"alice@example.com"</span>,
+  <span class="fn">greet</span>() {                           <span class="cm">// method inside object</span>
+    <span class="kw">return</span> <span class="str">`Hi, I'm </span><span class="fn">${<span class="kw">this</span>.name}</span><span class="str">`</span>;
+  }
+};
+
+<span class="cm">// Access properties</span>
+user.name;           <span class="cm">// "Alice"  — dot notation</span>
+user[<span class="str">"age"</span>];         <span class="cm">// 28      — bracket notation (useful for dynamic keys)</span>
+
+<span class="cm">// Add / change / delete</span>
+user.city   = <span class="str">"Amsterdam"</span>;    <span class="cm">// add new property</span>
+user.age    = <span class="num">29</span>;              <span class="cm">// update</span>
+<span class="kw">delete</span> user.email;             <span class="cm">// remove</span>
+
+<span class="cm">// Destructuring — pull out values elegantly</span>
+<span class="kw">const</span> { name, age } = user;
+<span class="fn">console</span>.<span class="fn">log</span>(name, age);        <span class="cm">// "Alice" 29</span></pre></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-hdr"><span class="num">4</span><h3>Arrays of Objects — Real-world Data</h3></div>
+    <div class="code"><div class="code-label">javascript — this is how APIs return data</div><pre><span class="kw">const</span> users = [
+  { id: <span class="num">1</span>, name: <span class="str">"Alice"</span>, active: <span class="kw">true</span>  },
+  { id: <span class="num">2</span>, name: <span class="str">"Bob"</span>,   active: <span class="kw">false</span> },
+  { id: <span class="num">3</span>, name: <span class="str">"Carol"</span>, active: <span class="kw">true</span>  },
+];
+
+<span class="cm">// Get only active users</span>
+<span class="kw">const</span> active = users.<span class="fn">filter</span>(u => u.active);
+
+<span class="cm">// Get just the names</span>
+<span class="kw">const</span> names = users.<span class="fn">map</span>(u => u.name);  <span class="cm">// ["Alice","Bob","Carol"]</span>
+
+<span class="cm">// Find a specific user</span>
+<span class="kw">const</span> bob = users.<span class="fn">find</span>(u => u.id === <span class="num">2</span>);</pre></div>
+  </div>
+
+  <div class="playground">
+    <div class="pg-header">
+      <span class="pg-title">⚡ Try it — <strong>Arrays & Objects</strong></span>
+      <button class="pg-run-btn" onclick="runPG('pg5')">▶ Run</button>
+    </div>
+    <textarea class="pg-editor" id="pg5-code" spellcheck="false">const products = [
+  { name: "Laptop", price: 999, inStock: true },
+  { name: "Phone",  price: 599, inStock: false },
+  { name: "Tablet", price: 349, inStock: true },
+  { name: "Watch",  price: 199, inStock: true },
+];
+
+// Get only in-stock products
+const available = products.filter(p => p.inStock);
+console.log("In stock:", available.map(p => p.name));
+
+// Get names of all products
+const names = products.map(p => p.name);
+console.log("All products:", names);
+
+// Total value of in-stock items
+const total = available.reduce((sum, p) => sum + p.price, 0);
+console.log("Total value: $" + total);
+
+// Find the cheapest product
+const cheapest = products.find(p => p.price === Math.min(...products.map(p => p.price)));
+console.log("Cheapest:", cheapest.name, "$" + cheapest.price);</textarea>
+    <div class="pg-output" id="pg5-out">// Output will appear here after clicking ▶ Run</div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nbtn nbtn-out" onclick="go(4)">← Events</button>
+    <button class="nbtn nbtn-js" onclick="go(6)">Take the Quiz →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 6 — QUIZ
+══════════════════════════════════════ -->
+<div class="page" id="p6">
+<div class="lesson">
+  <div class="lesson-hdr">
+    <div class="tag">Final Quiz</div>
+    <h2>Test Your Knowledge</h2>
+    <p>10 questions covering all 5 chapters. Click an answer to see instant feedback.</p>
+  </div>
+  <div id="qz-container"></div>
+  <div id="qz-result" style="display:none;text-align:center;padding:48px 24px;background:var(--card);border:2px solid var(--border);">
+    <div style="font-size:3.5rem;margin-bottom:12px" id="qz-emoji"></div>
+    <div style="font-size:3rem;font-weight:800;letter-spacing:-2px" id="qz-score"></div>
+    <div style="color:var(--muted);margin-top:6px">questions correct</div>
+    <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="nbtn nbtn-js" onclick="resetQuiz()">Retake Quiz</button>
+      <button class="nbtn nbtn-dark" onclick="go(1)">Back to Chapter 1</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════ SCRIPT ════════════════ -->
+<script>
+// ── NAVIGATION ──
+const TOTAL = 6;
+const visited = new Array(TOTAL+1).fill(false);
+
+function go(n) {
+  for (let i = 0; i <= TOTAL; i++) {
+    document.getElementById('p'+i)?.classList.toggle('active', i===n);
+    const t = document.getElementById('t'+i);
+    if (t) t.classList.toggle('active', i===n);
+  }
+  if (n > 0) visited[n] = true;
+  renderDots();
+  window.scrollTo(0,0);
+}
+
+function renderDots() {
+  const c = document.getElementById('ndots');
+  c.innerHTML = [1,2,3,4,5,6].map(i =>
+    `<div class="ndot ${visited[i] ? 'done' : ''}"></div>`
+  ).join('');
+}
+renderDots();
+
+// ── PLAYGROUNDS ──
+function runPG(id) {
+  const code = document.getElementById(id+'-code').value;
+  const out  = document.getElementById(id+'-out');
+  const lines = [];
+  const orig = console.log;
+  console.log = (...args) => lines.push(args.map(a => {
+    if (typeof a === 'object') return JSON.stringify(a);
+    return String(a);
+  }).join(' '));
+  try {
+    eval(code);
+    out.className = 'pg-output has-result';
+    out.innerHTML = lines.map(l => `<div class="out-line out-ok">▶ ${l}</div>`).join('') || '<div class="out-line out-ok">▶ (no output)</div>';
+  } catch(e) {
+    out.className = 'pg-output has-result';
+    out.innerHTML = `<div class="out-line out-err">✗ ${e.message}</div>`;
+  }
+  console.log = orig;
+}
+
+// allow tab key in textareas
+document.querySelectorAll('.pg-editor').forEach(ta => {
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = ta.selectionStart, end = ta.selectionEnd;
+      ta.value = ta.value.substring(0,s) + '  ' + ta.value.substring(end);
+      ta.selectionStart = ta.selectionEnd = s + 2;
+    }
+  });
+});
+
+// ── DOM DEMO ──
+let domAddCount = 0;
+let domToggle = false;
+function domDemo(action) {
+  const el = document.getElementById('dom-target');
+  const codeOut = document.getElementById('dom-code-out');
+  if (action === 'text') {
+    el.textContent = '✅ textContent changed by JavaScript!';
+    codeOut.textContent = "el.textContent = '✅ textContent changed by JavaScript!';";
+  } else if (action === 'style') {
+    el.style.background = '#fef3dc';
+    el.style.color = '#e8a020';
+    el.style.border = '2px solid #f5d08a';
+    codeOut.textContent = "el.style.background = '#fef3dc';\nel.style.color = '#e8a020';";
+  } else if (action === 'add') {
+    domAddCount++;
+    const list = document.getElementById('dom-list');
+    const li = document.createElement('li');
+    li.textContent = `📌 Item ${domAddCount} created with createElement`;
+    list.appendChild(li);
+    codeOut.textContent = `const li = document.createElement('li');\nli.textContent = 'Item ${domAddCount}';\nlist.appendChild(li);`;
+  } else if (action === 'toggle') {
+    domToggle = !domToggle;
+    el.style.transform = domToggle ? 'scale(1.04)' : 'scale(1)';
+    el.style.borderColor = domToggle ? '#e8a020' : '#e0ddd6';
+    codeOut.textContent = `el.classList.toggle('active'); // ${domToggle ? 'added' : 'removed'}`;
+  } else {
+    el.textContent = "I'm a DOM element — click the buttons above!";
+    el.style = '';
+    document.getElementById('dom-list').innerHTML = '';
+    domAddCount = 0; domToggle = false;
+    codeOut.textContent = '// Reset!';
+  }
+}
+
+// ── EVENTS DEMO ──
+(function() {
+  const log = document.getElementById('evt-log');
+  const MAX = 6;
+  let entries = [];
+  function logEvt(msg) {
+    entries.unshift(msg);
+    if (entries.length > MAX) entries.pop();
+    log.innerHTML = entries.map(e => `<div>${e}</div>`).join('');
+  }
+
+  document.getElementById('evt-input').addEventListener('input', e => {
+    logEvt(`⌨️  input event → value: "${e.target.value}"`);
+  });
+  document.getElementById('evt-btn').addEventListener('click', e => {
+    logEvt(`🖱️  click event → target: #${e.target.id}`);
+  });
+  document.getElementById('evt-btn2').addEventListener('mouseover', () => {
+    logEvt(`🔵 mouseover fired`);
+  });
+  document.getElementById('evt-btn2').addEventListener('mouseout', () => {
+    logEvt(`⚪ mouseout fired`);
+  });
+  document.getElementById('evt-input').addEventListener('keydown', e => {
+    logEvt(`🔑 keydown → key: "${e.key}"`);
+  });
+})();
+
+// ── QUIZ ──
+const questions = [
+  { q:"Which keyword creates a variable that CAN be reassigned?", opts:["const","let","final","static"], ans:1, fb:"let allows reassignment. const does not — use const by default." },
+  { q:"What does typeof 42 return?", opts:['"number"','"integer"','"float"','"numeric"'], ans:0, fb:'typeof always returns a string. Numbers (int or float) both return "number".' },
+  { q:"What is the output of: `Hello, ${\"World\"}`?", opts:["Hello, World","Hello, ${World}","Error","undefined"], ans:0, fb:"Template literals (backticks) evaluate expressions inside ${}." },
+  { q:"What does an arrow function look like for (x) => x * 2?", opts:["Doubles x and returns it","Returns x and multiplies later","Throws an error","Returns 2"], ans:0, fb:"Arrow functions with a single expression implicitly return the result." },
+  { q:"What does document.querySelector('.card') select?", opts:["Element with id 'card'","First element with class 'card'","All elements with class 'card'","The <card> tag"], ans:1, fb:"querySelector returns the FIRST matching element. Use querySelectorAll for all." },
+  { q:"Which method ADDS a CSS class to an element?", opts:["el.class.add()","el.classList.add()","el.addStyle()","el.style.add()"], ans:1, fb:"classList.add(), classList.remove(), and classList.toggle() manage classes." },
+  { q:"What does addEventListener's first argument specify?", opts:["The callback function","The event type (e.g. 'click')","The element to target","The event priority"], ans:1, fb:"First arg = event type as string ('click', 'input', etc). Second arg = the callback." },
+  { q:"What does array.filter() return?", opts:["The first matching item","A new array with matching items","Removes items from original array","A count of matches"], ans:1, fb:"filter() returns a NEW array. It never mutates the original." },
+  { q:"How do you access the 'name' property of object user?", opts:["user[name]","user->name","user.name or user['name']","user::name"], ans:2, fb:"Both dot notation (user.name) and bracket notation (user['name']) work." },
+  { q:"What does array.map() do?", opts:["Filters items","Transforms every item and returns a new array","Finds one item","Sorts items"], ans:1, fb:"map() applies a function to every item and returns a new array of the same length." },
+];
+
+let qzAnswered = new Array(questions.length).fill(false);
+let qzCorrect  = 0;
+
+function buildQuiz() {
+  const c = document.getElementById('qz-container');
+  c.innerHTML = '';
+  qzAnswered = new Array(questions.length).fill(false);
+  qzCorrect = 0;
+  document.getElementById('qz-result').style.display = 'none';
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-q-card';
+    card.innerHTML = `
+      <div class="quiz-q-text">${qi+1}. ${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,oi) => `<button class="qopt" onclick="ansQ(${qi},${oi})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-fb" id="qfb-${qi}">💡 ${q.fb}</div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function ansQ(qi, oi) {
+  if (qzAnswered[qi]) return;
+  qzAnswered[qi] = true;
+  const card = document.getElementById('qz-container').children[qi];
+  const opts = card.querySelectorAll('.qopt');
+  opts.forEach((o,i) => {
+    o.classList.add(i===questions[qi].ans ? 'correct' : 'wrong');
+    o.disabled = true;
+  });
+  document.getElementById('qfb-'+qi).style.display = 'block';
+  if (oi === questions[qi].ans) qzCorrect++;
+  if (qzAnswered.every(Boolean)) {
+    setTimeout(() => {
+      const r = document.getElementById('qz-result');
+      r.style.display = 'block';
+      document.getElementById('qz-score').textContent = `${qzCorrect} / ${questions.length}`;
+      document.getElementById('qz-emoji').textContent = qzCorrect === questions.length ? '🏆' : qzCorrect >= 7 ? '🎉' : qzCorrect >= 5 ? '💪' : '📖';
+      r.scrollIntoView({ behavior:'smooth', block:'center' });
+    }, 400);
+  }
+}
+
+function resetQuiz() { buildQuiz(); window.scrollTo(0,0); }
+
+buildQuiz();
+</script>
+</body>
+</html>
