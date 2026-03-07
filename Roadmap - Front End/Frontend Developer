@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend Developer Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --accent1: #7fff6e;
+    --accent2: #6e9fff;
+    --accent3: #ff6eb4;
+    --accent4: #ffcc6e;
+    --text: #e8e8f0;
+    --muted: #666680;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    border: 1px solid var(--accent1);
+    padding: 4px 12px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    animation: fadeIn 0.6s 0.1s ease both;
+  }
+
+  h1 span { color: var(--accent1); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 12px;
+    font-family: 'Space Mono', monospace;
+    animation: fadeIn 0.6s 0.2s ease both;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 20px 80px;
+  }
+
+  /* Timeline line */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent1), var(--accent2), var(--accent3), var(--accent4));
+    opacity: 0.3;
+  }
+
+  /* Phase blocks */
+  .phase {
+    margin-bottom: 12px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .phase.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--phase-color);
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+  }
+
+  .phase-header:hover {
+    background: #16161f;
+    border-color: var(--phase-color);
+  }
+
+  /* Dot on timeline */
+  .phase-header::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--phase-color);
+    box-shadow: 0 0 12px var(--phase-color);
+    z-index: 1;
+  }
+
+  .phase-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--phase-color);
+    letter-spacing: 2px;
+    min-width: 60px;
+  }
+
+  .phase-title {
+    flex: 1;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .phase-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--border);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  .phase-chevron {
+    color: var(--muted);
+    font-size: 18px;
+    transition: transform 0.3s ease;
+    margin-left: 8px;
+  }
+
+  .phase.open .phase-chevron {
+    transform: rotate(180deg);
+  }
+
+  .phase-body {
+    display: none;
+    background: #0e0e16;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-left: 3px solid var(--phase-color);
+    padding: 24px;
+  }
+
+  .phase.open .phase-body {
+    display: block;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+  }
+
+  .skill-item:hover {
+    border-color: var(--phase-color);
+  }
+
+  .skill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--phase-color);
+    flex-shrink: 0;
+  }
+
+  .skill-label { color: var(--text); }
+
+  .phase-tip {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border-left: 2px solid var(--phase-color);
+    padding: 8px 12px;
+    margin-top: 4px;
+    line-height: 1.6;
+  }
+
+  .phase-tip strong {
+    color: var(--phase-color);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Progress bar at top */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: var(--accent1);
+    transition: width 0.1s;
+    z-index: 999;
+  }
+
+  /* Summary footer */
+  .summary {
+    margin-top: 48px;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: center;
+    animation: fadeIn 1s 0.5s ease both;
+  }
+
+  .summary-item strong {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent1);
+    letter-spacing: -1px;
+  }
+
+  .summary-item span {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .timeline { padding-left: 28px; }
+    .phase-header::before { left: -24px; }
+    .summary { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<header>
+  <div class="tag">2026 Edition</div>
+  <h1>Frontend<br><span>Roadmap</span></h1>
+  <p class="subtitle">// click each phase to expand</p>
+</header>
+
+<div class="container">
+  <div class="timeline" id="timeline"></div>
+
+  <div class="summary">
+    <div class="summary-item">
+      <strong>6</strong>
+      <span>Phases</span>
+    </div>
+    <div class="summary-item">
+      <strong>12–18</strong>
+      <span>Months total</span>
+    </div>
+    <div class="summary-item">
+      <strong>40+</strong>
+      <span>Skills to learn</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const phases = [
+  {
+    num: "PHASE 01",
+    title: "The Foundations",
+    duration: "1–2 months",
+    color: "#7fff6e",
+    skills: [
+      "HTML5 Semantics", "CSS3 Basics", "Flexbox", "CSS Grid",
+      "Responsive Design", "Media Queries", "Browser DevTools", "Git Basics"
+    ],
+    tip: "Goal → Build 3 static websites from scratch. Focus on clean HTML structure and mobile-first CSS. Don't skip Git — commit every day."
+  },
+  {
+    num: "PHASE 02",
+    title: "JavaScript Core",
+    duration: "2–3 months",
+    color: "#6e9fff",
+    skills: [
+      "Variables & Types", "Functions & Scope", "DOM Manipulation",
+      "Events & Listeners", "Arrays & Objects", "ES6+ Syntax",
+      "Fetch & Promises", "Async / Await", "Local Storage"
+    ],
+    tip: "Goal → Build interactive apps (todo list, weather app, quiz game). JavaScript is the hardest phase — take your time here."
+  },
+  {
+    num: "PHASE 03",
+    title: "CSS Mastery",
+    duration: "1 month",
+    color: "#ff6eb4",
+    skills: [
+      "CSS Variables", "Animations & Transitions", "Tailwind CSS",
+      "CSS Modules", "SASS/SCSS", "Component Design", "Design Systems"
+    ],
+    tip: "Goal → Re-style your previous projects with Tailwind. Learn to clone real websites like Stripe or Linear — pixel-perfect practice."
+  },
+  {
+    num: "PHASE 04",
+    title: "React & Ecosystem",
+    duration: "2–3 months",
+    color: "#ffcc6e",
+    skills: [
+      "JSX Syntax", "Components & Props", "useState / useEffect",
+      "React Router", "Context API", "Custom Hooks",
+      "React Query", "Zustand / Redux", "Next.js Basics"
+    ],
+    tip: "Goal → Build a full multi-page React app with routing and API calls. Next.js is the industry standard — learn it early."
+  },
+  {
+    num: "PHASE 05",
+    title: "Professional Tools",
+    duration: "1–2 months",
+    color: "#c46eff",
+    skills: [
+      "TypeScript", "Vite / Webpack", "Jest & Testing",
+      "REST APIs", "GraphQL Basics", "Figma Handoff",
+      "Performance Optimization", "Accessibility (a11y)", "SEO Basics"
+    ],
+    tip: "Goal → Add TypeScript to an existing project. Write tests for your components. TypeScript is now required at most companies."
+  },
+  {
+    num: "PHASE 06",
+    title: "Ship & Get Hired",
+    duration: "2–3 months",
+    color: "#ff9f6e",
+    skills: [
+      "Portfolio Website", "GitHub Profile", "3 Full Projects",
+      "Vercel / Netlify Deploy", "Technical Interviews",
+      "LeetCode Basics", "LinkedIn Profile", "Open Source Contributions"
+    ],
+    tip: "Goal → Build 3 polished projects, deploy them live, and start applying. Quality over quantity — 3 great projects beat 10 mediocre ones."
+  }
+];
+
+const timeline = document.getElementById('timeline');
+
+phases.forEach((phase, i) => {
+  const el = document.createElement('div');
+  el.className = 'phase';
+  el.style.setProperty('--phase-color', phase.color);
+  el.style.transitionDelay = `${i * 0.08}s`;
+
+  el.innerHTML = `
+    <div class="phase-header">
+      <span class="phase-num">${phase.num}</span>
+      <span class="phase-title">${phase.title}</span>
+      <span class="phase-duration">${phase.duration}</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="skills-grid">
+        ${phase.skills.map(s => `
+          <div class="skill-item">
+            <div class="skill-dot"></div>
+            <span class="skill-label">${s}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="phase-tip">
+        <strong>💡 Tip</strong>
+        ${phase.tip}
+      </div>
+    </div>
+  `;
+
+  el.querySelector('.phase-header').addEventListener('click', () => {
+    el.classList.toggle('open');
+  });
+
+  timeline.appendChild(el);
+});
+
+// Intersection observer for entrance animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.phase').forEach(p => observer.observe(p));
+
+// Scroll progress bar
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  document.getElementById('progressBar').style.width = (scrolled * 100) + '%';
+});
+
+// Open first phase by default
+setTimeout(() => {
+  document.querySelector('.phase').classList.add('open');
+}, 600);
+</script>
+</body>
+</html>
