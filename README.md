@@ -5,9 +5,9 @@
 
 🤔 I’m looking for help with **improving my backend logic and making better web applications**
 
-💬 Ask me about **basic web development, front-end design, and JavaScript**
+💬 What to learn in the future **TypeScript, Tailwind/Bootstrap and React/Angular**
 
-☝️🤓 Fun fact: **My goal is to become a remote developer and work from home in the future**
+☝️🤓 Goal: **My goal is to become a Frontend Developer and working from home**
 
 
 
