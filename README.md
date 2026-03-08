@@ -1,13 +1,13 @@
-# 💫 About Me:
-👨🏻‍💻 I’m currently working on a **group project with my classmates – building an interactive quiz website**
+#  About Me:
+I’m currently working on a **group project with my classmates – building an interactive quiz website**
 
-📚 I’m currently learning: **HTML, CSS, JavaScript and PHP**
+I’m currently learning: **HTML, CSS, JavaScript and PHP**
 
-🤔 I’m looking for help with **improving my backend logic and making better web applications**
+I’m looking for help with **improving my backend logic and making better web applications**
 
-💬 What to learn in the future: **TypeScript, Tailwind/Bootstrap and React/Angular**
+What to learn in the future: **TypeScript, Tailwind/Bootstrap and React/Angular**
 
-☝️🤓 Goal: **My goal is to become a Frontend Developer and working from home**
+Goal: **My goal is to become a Frontend Developer and working from home**
 
 
 
